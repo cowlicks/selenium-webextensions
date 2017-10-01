@@ -8,18 +8,13 @@ from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
 
-from .config import url_info, make_urls, firefox_info, chrome_info
+from .config import Config, make_urls
+from .util import get_git_root, run_shell_command
 
 BROWSER_TYPES = ['chrome', 'firefox']
 BROWSER_NAMES = ['google-chrome', 'google-chrome-stable', 'google-chrome-beta', 'firefox']
 
 Specifics = namedtuple('Specifics', ['manager', 'background_url', 'info'])
-
-parse_stdout = lambda res: res.strip().decode('utf-8')
-
-run_shell_command = lambda command: parse_stdout(subprocess.check_output(command))
-
-get_git_root = lambda: run_shell_command(['git', 'rev-parse', '--show-toplevel'])
 
 
 def unix_which(command, silent=False):
@@ -48,17 +43,6 @@ def get_browser_name(string):
         raise ValueError('Could not get browser name from %s' % string)
 
 
-def build_crx():
-    '''Builds the .crx file for Chrome and returns the path to it'''
-    cmd = ['make', '-sC', get_git_root(), 'crx']
-    return os.path.join(get_git_root(), run_shell_command(cmd).split()[-1])
-
-
-def build_xpi():
-    cmd = ['make', '-sC', get_git_root(), 'xpi']
-    return os.path.join(get_git_root(), run_shell_command(cmd).split()[-1])
-
-
 def install_ext_on_ff(driver, extension_path):
     '''
     Use Selenium's internal API's to manually send a message to geckodriver
@@ -72,6 +56,7 @@ def install_ext_on_ff(driver, extension_path):
 
 
 class Shim:
+    instance = None
     _browser_msg = '''BROWSER should be one of:
 * /path/to/a/browser
 * a browser executable name so we can find the browser with "which $BROWSER"
@@ -79,9 +64,14 @@ class Shim:
 '''
     __doc__ = 'Chooses the correct driver and extension_url based on the BROWSER environment\nvariable. ' + _browser_msg
 
-    def __init__(self, chrome_info, firefox_info):
+    def __init__(self):
+        if Config.instance is None:
+            raise ValueError("No configuration set. Make a Config instance")
+
         print('Configuring the test run')
-        self.chrome_info, self.firefox_info = chrome_info, firefox_info
+        self.config = Config.instance
+        self.chrome_info = self.config.chrome_info,
+        self.firefox_info = self.config.firefox_info
         self._specifics = None
         browser = os.environ.get('BROWSER')
         # get browser_path and broser_type first
@@ -119,13 +109,13 @@ class Shim:
         self.manager, self.base_url, self.info = self._specifics[self.browser_type]
 
     def _set_urls(self, base_url):
-        self.urls = make_urls(base_url, url_info)
+        self.urls = make_urls(base_url, self.config.url_info)
 
     def get_ext_path(self):
         if self.browser_type == 'chrome':
-            return build_crx()
+            return self.config.make_crx()
         elif self.browser_type == 'firefox':
-            return build_xpi()
+            return self.config.make_xpi()
         else:
             raise ValueError("bad browser getting extension path")
 
