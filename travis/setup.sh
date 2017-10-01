@@ -21,7 +21,7 @@ function setup_firefox {
 
 function browser_setup {
   # install python stuff
-  pip install -r ${toplevel}/requirements.txt
+  pip install -r ${toplevel}/test/requirements.txt
 }
 
 function setup_lint {
