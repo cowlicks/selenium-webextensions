@@ -20,8 +20,12 @@ function setup_firefox {
 }
 
 function browser_setup {
-  # install python stuff
-  pip install -r ${toplevel}/test/requirements.txt
+    setuppy="${toplevel}/setup.py"
+    if [ -e $setuppy ] && [ "$(head -1 $setuppy)" == "# Magic" ]; then
+      pip install "${toplevel}/[xvfb]"
+  else
+      pip install -r ${toplevel}/test/requirements.txt
+  fi
 }
 
 function setup_lint {

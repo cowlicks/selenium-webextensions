@@ -1,3 +1,9 @@
+# Magic
+'''
+This "# Magic" comment is used to determine wether travis is being for actual
+selenium_webextension development, or if it is being run by someone using this
+as a package. If it changes, change the code in travis/setup.sh too.
+'''
 # Always prefer setuptools over distutils
 from setuptools import setup
 # To use a consistent encoding
