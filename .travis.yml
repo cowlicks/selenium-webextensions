@@ -19,9 +19,7 @@ matrix:
         firefox: latest-esr
       env: INFO="firefox esr" BROWSER=firefox
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libxml2-utils
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-before_script: travis_retry ./setup_travis.sh
-script: . ./run_travis.sh
+before_script: ./travis/setup.sh
+script: . ./travis/run.sh
