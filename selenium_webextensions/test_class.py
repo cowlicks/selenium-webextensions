@@ -24,7 +24,7 @@ class ExtensionTestCase(unittest.TestCase):
     def setUpClass(cls):
         cls.set_shim()
         cls.manager = cls.shim.manager
-        cls.base_url = cls.shim.bg_url
+        cls.base_url = cls.shim.urls.background
         cls.wants_xvfb = cls.shim.wants_xvfb
         if cls.wants_xvfb:
             from xvfbwrapper import Xvfb
@@ -44,7 +44,6 @@ class ExtensionTestCase(unittest.TestCase):
     def init(self, driver):
         driver.set_script_timeout(DEFAULT_TIMEOUT)
         self.driver = driver
-        self.bg_url = self.base_url + "_generated_background_page.html"
 
     def run(self, result=None):
         with self.manager() as driver:

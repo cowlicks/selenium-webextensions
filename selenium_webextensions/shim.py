@@ -70,7 +70,7 @@ class Shim:
 
         print('Configuring the test run')
         self.config = Config.instance
-        self.chrome_info = self.config.chrome_info,
+        self.chrome_info = self.config.chrome_info
         self.firefox_info = self.config.firefox_info
         self._specifics = None
         browser = os.environ.get('BROWSER')
