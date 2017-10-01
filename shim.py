@@ -151,7 +151,6 @@ class Shim:
         opts.add_experimental_option("prefs", {"profile.block_third_party_cookies": False})
 
         caps = DesiredCapabilities.CHROME.copy()
-        caps['loggingPrefs'] = {'browser': 'ALL'}
 
         driver = webdriver.Chrome(chrome_options=opts, desired_capabilities=caps)
         try:
