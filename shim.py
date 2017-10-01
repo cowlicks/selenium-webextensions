@@ -8,7 +8,7 @@ from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
 
-from .config import pages, firefox_info, chrome_info
+from .config import url_info, make_urls, firefox_info, chrome_info
 
 BROWSER_TYPES = ['chrome', 'firefox']
 BROWSER_NAMES = ['google-chrome', 'google-chrome-stable', 'google-chrome-beta', 'firefox']
@@ -123,10 +123,7 @@ class Shim:
         self.manager, self.base_url, self.info = self._specifics[self.browser_type]
 
     def _set_urls(self, base_url):
-        self.base_url = base_url
-        self.bg_url = base_url + "_generated_background_page.html"
-        self.popup_url = base_url + "popup.html"
-        self.options_url = base_url + "options.html"
+        self.urls = make_urls(base_url, url_info)
 
     def get_ext_path(self):
         if self.browser_type == 'chrome':
