@@ -23,3 +23,14 @@ info needed for firefox and chrome
 '''
 firefox_info = {'extension_id': 'https-everywhere-eff@eff.org', 'uuid': 'd56a5b99-51b6-4e83-ab23-796216679614'}
 chrome_info = {'extension_id': 'nmleinhehnmmepmdbjddclicgpfhbdjo'}
+
+required = ['firefox_info', 'chrome_info', 'url_info', 'make_crx', 'make_xpi']
+
+class Config:
+    instance = None
+    def __init__(self, conf):
+        for r in required:
+            if r not in conf:
+                raise ValueError('missing configuration %s ' % r)
+            setattr(self, r, conf[r])
+        Config.instance = self
